@@ -1,0 +1,20 @@
+{
+    "name": "firstw/event-manager",
+    "description": "PSR-14 event manager libraray for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "wujunwei",
+            "email": "wjw3323@live.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Psr\\EventManager\\": "src/Psr",
+            "FirstW\\EventManager\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
