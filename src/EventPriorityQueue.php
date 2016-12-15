@@ -13,9 +13,13 @@ class EventPriorityQueue
 {
     const DEFAULT_LEVEL = 0;
     private $queue;
-    public function __construct()
+    public function __construct($level = null)
     {
+        if ($level === null){
+            $level = \SplPriorityQueue::EXTR_DATA;
+        }
         $this->queue = new \SplPriorityQueue();
+        $this->queue->setExtractFlags($level);
     }
 
     public function insert(\Closure $callback, $priority = null)
@@ -28,7 +32,36 @@ class EventPriorityQueue
 
     public function extract()
     {
-        $this->queue->extract();
+        return $this->queue->extract();
+    }
+
+    public function flush()
+    {
+        $this->queue = new \SplPriorityQueue();
+    }
+
+    public function top()
+    {
+        return $this->queue->top();
+    }
+    public function isEmpty()
+    {
+        return $this->queue->isEmpty();
+    }
+
+    public function getAll()
+    {
+        $data = [];
+        if (!$this->isEmpty()){
+            $this->queue->rewind();
+            while($this->queue->valid()){
+                $data[] = $this->queue->current();
+                $this->queue->next();
+            }
+            return $data;
+        }else{
+            return $data;
+        }
     }
 
 }

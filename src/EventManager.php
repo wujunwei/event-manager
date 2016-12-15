@@ -14,14 +14,20 @@ use Psr\EventManager\EventManagerInterface;
 
 class EventManager implements EventManagerInterface
 {
-
-    
+    /**
+     * @var array
+     */
+    private $eventPool;
+    /**
+     * @var EventPriorityQueue[]
+     */
+    private $callbackPool = [];
     /**
      * EventManager constructor.
      */
     public function __construct()
     {
-        
+        $this->eventPool = new \SplObjectStorage();
     }
 
     /**
@@ -32,7 +38,7 @@ class EventManager implements EventManagerInterface
      * @param int $priority the priority at which the $callback executed
      * @return bool true on success false on failure
      */
-    public function attach($event, $callback, $priority = 0)
+    public function attach($event, $callback, $priority = EventPriorityQueue::DEFAULT_LEVEL)
     {
         // TODO: Implement attach() method.
     }
@@ -57,7 +63,7 @@ class EventManager implements EventManagerInterface
      */
     public function clearListeners($event)
     {
-        // TODO: Implement clearListeners() method.
+        $this->callbackPool[$event]->flush();
     }
 
     /**
