@@ -1,6 +1,6 @@
 {
     "name": "firstw/event-manager",
-    "description": "PSR-14 event manager libraray for PHP",
+    "description": "PSR-14 event manager library for PHP",
     "type": "library",
     "license": "MIT",
     "authors": [

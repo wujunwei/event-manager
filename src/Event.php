@@ -14,6 +14,19 @@ use Psr\EventManager\EventInterface;
 class Event implements EventInterface
 {
 
+    private $name;
+    private $params;
+    private $flag;
+    private $target;
+
+    public function __construct($name = '', $target = null, $params = [], $flag = false)
+    {
+        $this->setName($name);
+        $this->setTarget($target);
+        $this->setParams($params);
+        $this->stopPropagation($flag);
+    }
+
     /**
      * Get event name
      *
@@ -21,7 +34,7 @@ class Event implements EventInterface
      */
     public function getName()
     {
-        // TODO: Implement getName() method.
+       return $this->name;
     }
 
     /**
@@ -31,7 +44,7 @@ class Event implements EventInterface
      */
     public function getTarget()
     {
-        // TODO: Implement getTarget() method.
+        return $this->target;
     }
 
     /**
@@ -41,7 +54,7 @@ class Event implements EventInterface
      */
     public function getParams()
     {
-        // TODO: Implement getParams() method.
+        return isset($this->params)? $this->params: [];
     }
 
     /**
@@ -63,7 +76,7 @@ class Event implements EventInterface
      */
     public function setName($name)
     {
-        // TODO: Implement setName() method.
+       $this->name = strval($name);
     }
 
     /**
@@ -74,7 +87,7 @@ class Event implements EventInterface
      */
     public function setTarget($target)
     {
-        // TODO: Implement setTarget() method.
+        $this->target = $target;
     }
 
     /**
@@ -85,7 +98,7 @@ class Event implements EventInterface
      */
     public function setParams(array $params)
     {
-        // TODO: Implement setParams() method.
+        $this->params = $params;
     }
 
     /**
@@ -95,7 +108,7 @@ class Event implements EventInterface
      */
     public function stopPropagation($flag)
     {
-        // TODO: Implement stopPropagation() method.
+        $this->flag = boolval($flag);
     }
 
     /**
@@ -105,6 +118,6 @@ class Event implements EventInterface
      */
     public function isPropagationStopped()
     {
-        // TODO: Implement isPropagationStopped() method.
+        return $this->flag;
     }
 }

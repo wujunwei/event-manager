@@ -15,6 +15,15 @@ use Psr\EventManager\EventManagerInterface;
 class EventManager implements EventManagerInterface
 {
 
+    
+    /**
+     * EventManager constructor.
+     */
+    public function __construct()
+    {
+        
+    }
+
     /**
      * Attaches a listener to an event
      *
