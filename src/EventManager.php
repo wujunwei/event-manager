@@ -15,20 +15,13 @@ use Psr\EventManager\EventManagerInterface;
 class EventManager implements EventManagerInterface
 {
     /**
-     * @var array
-     */
-    private $eventPool;
-    /**
      * @var EventPriorityQueue[]
      */
-    private $callbackPool = [];
+    private $EventPool = [];
     /**
-     * EventManager constructor.
+     * @var \SplObjectStorage[]
      */
-    public function __construct()
-    {
-        $this->eventPool = new \SplObjectStorage();
-    }
+    private $ObjPool = [];
 
     /**
      * Attaches a listener to an event
@@ -40,19 +33,28 @@ class EventManager implements EventManagerInterface
      */
     public function attach($event, $callback, $priority = EventPriorityQueue::DEFAULT_LEVEL)
     {
-        // TODO: Implement attach() method.
+        if (!isset($this->EventPool[$event])){
+            $this->EventPool[$event] = new EventPriorityQueue();
+            $this->ObjPool[$event] = new \SplObjectStorage();
+        }
+        $this->ObjPool[$event]->attach($callback, $priority);
+        return $this->EventPool[$event]->insert($callback, $priority);
     }
 
     /**
      * Detaches a listener from an event
      *
      * @param string $event the event to attach too
-     * @param callable $callback a callable function
+     * @param \Closure|string $callback a callable function
      * @return bool true on success false on failure
      */
     public function detach($event, $callback)
     {
-        // TODO: Implement detach() method.
+        if ($this->ObjPool[$event]->contains($callback)){
+            $this->ObjPool[$event]->detach($callback);
+        }
+
+        $this->EventPool = new EventPriorityQueue($this->ObjPool[$event]);
     }
 
     /**
@@ -63,7 +65,8 @@ class EventManager implements EventManagerInterface
      */
     public function clearListeners($event)
     {
-        $this->callbackPool[$event]->flush();
+        $this->ObjPool[$event]->removeAll($this->ObjPool[$event]);
+        $this->EventPool[$event] = new EventPriorityQueue();
     }
 
     /**

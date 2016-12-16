@@ -9,59 +9,50 @@
 namespace FirstW\EventManager;
 
 
-class EventPriorityQueue
+class EventPriorityQueue extends \SplPriorityQueue
 {
     const DEFAULT_LEVEL = 0;
-    private $queue;
-    public function __construct($level = null)
+
+    /**
+     * EventPriorityQueue constructor.
+     * @param \SplObjectStorage $obj
+     * @param null $flag
+     */
+    public function __construct(\SplObjectStorage $obj = null, $flag = null)
     {
-        if ($level === null){
-            $level = \SplPriorityQueue::EXTR_DATA;
+        if ($flag === null){
+            $flag = static::EXTR_DATA;
         }
-        $this->queue = new \SplPriorityQueue();
-        $this->queue->setExtractFlags($level);
+        $this->refresh($obj);
+        $this->setExtractFlags($flag);
     }
 
-    public function insert(\Closure $callback, $priority = null)
+    public function insert($callback, $priority = null)
     {
+        if (!is_callable($callback)){
+            return false;
+        }
         if ($priority === null){
             $priority = static::DEFAULT_LEVEL;
         }
-        $this->queue->insert($callback, $priority);
+        parent::insert($callback, $priority);
+        return true;
     }
 
-    public function extract()
-    {
-        return $this->queue->extract();
-    }
 
-    public function flush()
+    public function refresh(\SplObjectStorage $obj)
     {
-        $this->queue = new \SplPriorityQueue();
-    }
-
-    public function top()
-    {
-        return $this->queue->top();
-    }
-    public function isEmpty()
-    {
-        return $this->queue->isEmpty();
-    }
-
-    public function getAll()
-    {
-        $data = [];
-        if (!$this->isEmpty()){
-            $this->queue->rewind();
-            while($this->queue->valid()){
-                $data[] = $this->queue->current();
-                $this->queue->next();
+        if (!$obj instanceof \SplObjectStorage){
+            return ;
+        }
+        if ($obj->count() > 0){
+            $obj->rewind();
+            while ($obj->valid()){
+                $this->insert($obj->current(), $obj->getInfo());
+                $obj->next();
             }
-            return $data;
-        }else{
-            return $data;
         }
     }
+
 
 }
