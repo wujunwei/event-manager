@@ -27,7 +27,7 @@ class EventManager implements EventManagerInterface
      * Attaches a listener to an event
      *
      * @param string $event the event to attach too
-     * @param callable $callback a callable function
+     * @param \Closure|callable $callback a callable function
      * @param int $priority the priority at which the $callback executed
      * @return bool true on success false on failure
      */
@@ -36,6 +36,11 @@ class EventManager implements EventManagerInterface
         if (!isset($this->EventPool[$event])){
             $this->EventPool[$event] = new EventPriorityQueue();
             $this->ObjPool[$event] = new \SplObjectStorage();
+        }
+        if ($callback instanceof \Closure){
+            $callback = function ($event) use($callback){
+                return call_user_func($callback, $event);
+            };
         }
         $this->ObjPool[$event]->attach($callback, $priority);
         return $this->EventPool[$event]->insert($callback, $priority);
@@ -81,6 +86,23 @@ class EventManager implements EventManagerInterface
      */
     public function trigger($event, $target = null, $argv = array())
     {
-        // TODO: Implement trigger() method.
+        if (is_string($event)){
+            $name = $event;
+            $event = new Event($name, $target, $argv);
+        }else{
+            $name = $event->getName();
+            $event->setParams($argv);
+            $event->setTarget($target);
+        }
+        $callbacks = $this->EventPool[$name];
+        $callbacks->rewind();
+        while ($callbacks->valid()){
+            if ($event->isPropagationStopped()) {
+                break;
+            }
+            call_user_func($callbacks->current(), $event);
+            $callbacks->next();
+        }
+        return ;
     }
 }
