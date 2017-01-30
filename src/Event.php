@@ -65,7 +65,7 @@ class Event implements EventInterface
      */
     public function getParam($name)
     {
-        // TODO: Implement getParam() method.
+        return $this->params;
     }
 
     /**

@@ -60,6 +60,7 @@ class EventManager implements EventManagerInterface
         }
 
         $this->EventPool = new EventPriorityQueue($this->ObjPool[$event]);
+        return true;
     }
 
     /**
